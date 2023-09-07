@@ -7,7 +7,8 @@ async function run() {
   // a valid username and password! Note that in a production environment,
   // you do not want to store your password in plain-text here.
   const uri =
-    "mongodb+srv://<user>:<password>@<cluster-url>?retryWrites=true&w=majority";
+    // "mongodb+srv://<user>:<password>@<cluster-url>?retryWrites=true&w=majority";
+    "mongodb+srv://ditrafabri:8ULhGA2uK8TEuTDM@luster0.5velkt3.mongodb.net/?retryWrites=true&w=majority";
 
   // The MongoClient is the object that references the connection to our
   // datastore (Atlas, for example)
@@ -104,7 +105,7 @@ async function run() {
    * filters, and is used here to show its most basic use.
    */
 
-  const findQuery = { prepTimeInMinutes: { $lt: 45 } };
+  const findQuery = { prepTimeInMinutes: { $gt: 45 } };
 
   try {
     const cursor = await collection.find(findQuery).sort({ name: 1 });
@@ -119,14 +120,15 @@ async function run() {
 
   // We can also find a single document. Let's find the first document
   // that has the string "potato" in the ingredients list.
-  const findOneQuery = { ingredients: "potato" };
+  const ingredient = 'onion'
+  const findOneQuery = { ingredients: ingredient };
 
   try {
     const findOneResult = await collection.findOne(findOneQuery);
     if (findOneResult === null) {
-      console.log("Couldn't find any recipes that contain 'potato' as an ingredient.\n");
+      console.log(`Couldn't find any recipes that contain '${ingredient}' as an ingredient.\n`);
     } else {
-      console.log(`Found a recipe with 'potato' as an ingredient:\n${JSON.stringify(findOneResult)}\n`);
+      console.log(`Found a recipe with '${ingredient}' as an ingredient:\n${JSON.stringify(findOneResult)}\n`);
     }
   } catch (err) {
     console.error(`Something went wrong trying to find one document: ${err}\n`);
@@ -170,7 +172,13 @@ async function run() {
 
   const deleteQuery = { name: { $in: ["elotes", "fried rice"] } };
   try {
-    const deleteResult = await collection.deleteMany(deleteQuery);
+    //const deleteResult = await collection.deleteMany(deleteQuery);
+    //console.log(`Deleted ${deleteResult.deletedCount} documents\n`);
+  } catch (err) {
+    console.error(`Something went wrong trying to delete documents: ${err}\n`);
+  }
+  try {
+    const deleteResult = await collection.deleteMany();
     console.log(`Deleted ${deleteResult.deletedCount} documents\n`);
   } catch (err) {
     console.error(`Something went wrong trying to delete documents: ${err}\n`);
